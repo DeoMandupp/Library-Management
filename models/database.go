@@ -26,7 +26,7 @@ func ConnectToDB() {
 	// Load env file
 	err = godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Fatal("Error loading .env fileeeeee")
 	}
 
 	// Get database url from environment
