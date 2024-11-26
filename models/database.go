@@ -11,9 +11,9 @@ import (
 
 type Book struct {
 	ID         int    `json:"ID" gorm:"primaryKey"`
-	AuthorName string `json:"AuthorName"`
-	BookName   string `json:"BookName"`
-	ISBN       int    `json:"ISBN"`
+	AuthorName string `json:"AuthorName" gorm:"column:AuthorName; not null"`
+	BookName   string `json:"BookName" gorm:"column:BookName; not null"`
+	ISBN       int    `json:"ISBN" gorm:"column:ISBN; not null"`
 }
 
 var DB *gorm.DB
