@@ -87,3 +87,35 @@ func GetBookByID(c *gin.Context) {
 
 	c.JSON(http.StatusOK, book)
 }
+
+// Modify book details by ID
+func ModifyBook(c *gin.Context) {
+	idParam := c.Param("id")
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid book ID"})
+		return
+	}
+
+	// Fetch the book by ID
+	var book models.Book
+	if err := models.DB.First(&book, id).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Book not found"})
+		return
+	}
+
+	// Bind the updated data from the request body
+	var updatedData models.Book
+	if err := c.ShouldBindJSON(&updatedData); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
+		return
+	}
+
+	// Update only the provided fields
+	if err := models.DB.Model(&book).Updates(updatedData).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update book"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Book updated successfully", "book": book})
+}

@@ -16,6 +16,7 @@ func main() {
 	r.GET("/books/:id", controllers.GetBookByID)
 	r.POST("/books", controllers.AddBooks)
 	r.DELETE("/books/:id", controllers.DeleteBook)
+	r.PUT("/books/:id", controllers.ModifyBook)
 	r.Run(":8080")
 
 }
