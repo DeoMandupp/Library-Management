@@ -64,3 +64,26 @@ func DeleteBook(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"message": "Book deleted successfully"})
 }
+
+// Fetch a book by ID
+func GetBookByID(c *gin.Context) {
+	idParam := c.Param("id")
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid book ID"})
+		return
+	}
+
+	var book models.Book
+	result := models.DB.First(&book, id) // Fetch the book using the primary key (ID)
+	if result.Error != nil {
+		if result.Error.Error() == "record not found" {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Book not found"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch book"})
+		}
+		return
+	}
+
+	c.JSON(http.StatusOK, book)
+}
