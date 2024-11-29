@@ -10,7 +10,7 @@ import (
 )
 
 type Book struct {
-	ID         int    `json:"ID" gorm:"primaryKey"`
+	ID         int    `json:"ID" gorm:"primaryKey"` // extra field is added
 	AuthorName string `json:"AuthorName" gorm:"column:AuthorName; not null"`
 	BookName   string `json:"BookName" gorm:"column:BookName; not null"`
 	ISBN       int    `json:"ISBN" gorm:"column:ISBN; not null"`
@@ -37,6 +37,7 @@ func ConnectToDB() {
 	}
 
 	//Migrate the book model
+	// This automagrator is adding extra field in the data base
 	err = DB.AutoMigrate(&Book{})
 	if err != nil {
 		log.Fatalf("failed to migrate %v", err)

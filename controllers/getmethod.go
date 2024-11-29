@@ -1,24 +1,63 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
 	"github.com/DeoMandupp/Library-Management/models"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 func GetBooks(c *gin.Context) {
-	var books []models.Book
+	// Get the user ID from query parameters
+	userID := c.Query("id")
 
-	res := models.DB.Find(&books)
-	if res.Error != nil {
+	var books []models.Book
+	var result *gorm.DB
+
+	if userID != "" {
+		fmt.Println("using ID")
+		// If a user ID is provided, then fetching the specific book
+		result = models.DB.Where("id = ?", userID).Find(&books)
+	} else {
+		fmt.Println("Not using ID")
+		// If user ID is not provided, the fetching all the books
+		result = models.DB.Find(&books)
+	}
+
+	// Check for database errors
+	if result.Error != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Failed to fetch"})
+			"error": "Failed to fetch books",
+		})
 		return
 	}
+
+	// Check if no books were found
+	if len(books) == 0 {
+		c.JSON(http.StatusNotFound, gin.H{
+			"error": "No books found",
+		})
+		return
+	}
+
+	// Return the books
 	c.JSON(http.StatusOK, books)
 }
+
+// func GetBooks(c *gin.Context) {
+// 	var books []models.Book
+
+// 	res := models.DB.Find(&books)
+// 	if res.Error != nil {
+// 		c.JSON(http.StatusInternalServerError, gin.H{
+// 			"error": "Failed to fetch"})
+// 		return
+// 	}
+// 	c.JSON(http.StatusOK, books)
+// }
 
 func AddBooks(c *gin.Context) {
 	var book models.Book
