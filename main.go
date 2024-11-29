@@ -13,9 +13,10 @@ func main() {
 	r := gin.Default() //gin router
 
 	r.GET("/books", controllers.GetBooks)
-	r.GET("/books/:id", controllers.GetBookByID)
+	//r.GET("/books/:id", controllers.GetBookByID)
 	r.POST("/books", controllers.AddBooks)
 	r.DELETE("/books/:id", controllers.DeleteBook)
+	r.PUT("/books/:id", controllers.ModifyBook)
 	r.Run(":8080")
 
 }
